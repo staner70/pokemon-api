@@ -1,12 +1,13 @@
 const express = require('express');
 let pokemons = require('./mock-pokemon');
-const { success } = require('./helper');
+const { success, getUniqueId } = require('./helper');
 const morgan = require('morgan');
 const favicon = require('serve-favicon');
 
 const app = express();
-
 const port = 3000;
+
+app.use(express.json());
 app
 .use(favicon(__dirname + '/favicon.ico'))
 .use(morgan('dev'));
@@ -39,11 +40,13 @@ app.get('/api/pokemons/:id', (req, res) => {
 });
 
 app.post('/api/pokemons', (req, res) => {
-    const id = 123;
+    const id = getUniqueId(pokemons);
     const pokemonCreated = { ...req.body, ...{id: id, created: new Date()}};
     pokemons.push(pokemonCreated);
     const message = `Le pokémon ${pokemonCreated.name} a bien été crée.`;
     res.json(success(message, pokemonCreated));
 })
+
+
 
 app.listen(port, () => console.log(`Notre application Node est démarré sur : http://localhost:${port}`));
