@@ -3,9 +3,49 @@ let pokemons = require('./mock-pokemon');
 const { success, getUniqueId } = require('./helper');
 const morgan = require('morgan');
 const favicon = require('serve-favicon');
+const PokemonModel = require('./src/models/pokemon');
+const { Sequelize, DataTypes } = require( 'sequelize' );
 
 const app = express();
 const port = 3000;
+
+const sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
+// const sequelize = new Sequelize(
+//     'pokedex',
+//     'pokedex',
+//     'pokedex',
+//     {
+//         host: 'localhost',
+//         dialect: 'postgres',
+//         logging: false
+//     }
+// )
+sequelize.authenticate()
+    .then(_ => console.log('Connection has been established succesfully'))
+    .catch(error => console.error('Unable to connect to the database:', error))
+
+const Pokemon = PokemonModel(sequelize, DataTypes);
+
+sequelize.sync({force: true})
+    .then(_ => {
+        console.log('La base de données "Pokedex" a bien été synchronisée.');
+        pokemons.map(pokemon => {
+            Pokemon.create({
+                name: pokemon.name,
+                hp: pokemon.hp,
+                cp: pokemon.cp,
+                picture: pokemon.picture,
+                types: pokemon.types.join()
+            }).then(pokemon => console.log(pokemon.toJSON()))
+        });
+        // Pokemon.create({
+        //     name: 'Bulbizarre',
+        //     hp: 25,
+        //     cp: 5,
+        //     picture: 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png',
+        //     types: ["Plante", "Poison"].join()
+        // }).then(bulbizarre => console.log(bulbizarre.toJSON()))
+    })
 
 app.use(express.json());
 app
@@ -45,7 +85,7 @@ app.post('/api/pokemons', (req, res) => {
     pokemons.push(pokemonCreated);
     const message = `Le pokémon ${pokemonCreated.name} a bien été crée.`;
     res.json(success(message, pokemonCreated));
-})
+});
 
 app.put('/api/pokemons/:id', (req, res) => {
     const id = parseInt(req.params.id);
@@ -56,6 +96,14 @@ app.put('/api/pokemons/:id', (req, res) => {
 
     const message = `Le pokemon ${pokemonUpdated.name} a bien été modifié.`;
     res.json(success(message, pokemonUpdated));
-})
+});
+
+app.delete('/api/pokemons/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const pokemonDeleted = pokemons.find(pokemon => pokemon.id === id);
+    pokemons = pokemons.filter(pokemon => pokemon.id !== id);
+    const message = `Le pokemon ${pokemonDeleted.name} a bien été supprimé.`;
+    res.json(success(message, pokemonDeleted));
+});
 
 app.listen(port, () => console.log(`Notre application Node est démarré sur : http://localhost:${port}`));
