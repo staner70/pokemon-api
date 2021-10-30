@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
         dialect: 'postgres',
         dialectOptions: {
           ssl: true
-        });
+        }});
 } else {
     sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
 }
