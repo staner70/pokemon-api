@@ -7,7 +7,7 @@ const pokemons = require('./mock-pokemon');
 // const sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
 let sequelize;
 if (process.env.NODE_ENV === 'production') {
-    sequelize = new Sequelize('postgres://vyjyzjtekftezy:22d8a826b74aa68d6524ea8aeb2a1094f2923aaf2b6d80375adbcc0a82ac80f5@ec2-44-198-196-169.compute-1.amazonaws.com:5432/dct63iuojpfh9i');
+    sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
     sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
 }
