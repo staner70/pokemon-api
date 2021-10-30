@@ -1,5 +1,6 @@
 const express = require('express');
 const favicon = require('serve-favicon');
+const cors = require('cors');
 const sequelize = require('./src/db/sequelize');
 
 
@@ -8,7 +9,13 @@ const port = process.env.PORT || 3000;
 
 app
 .use(favicon(__dirname + '/favicon.ico'))
-.use(express.json());
+.use(express.json())
+.use(cors({
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }));
 
 sequelize.initDb();
 
