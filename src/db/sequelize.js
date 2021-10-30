@@ -21,7 +21,7 @@ sequelize.authenticate()
 
 
 const initDb = () => {
-    return sequelize.sync().then(_ => {
+    return sequelize.sync({force: true}).then(_ => {
         pokemons.map(pokemon => {
         Pokemon.create({
             name: pokemon.name,
