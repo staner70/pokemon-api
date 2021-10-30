@@ -1,15 +1,13 @@
 const express = require('express');
-const morgan = require('morgan');
 const favicon = require('serve-favicon');
 const sequelize = require('./src/db/sequelize');
 
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app
 .use(favicon(__dirname + '/favicon.ico'))
-.use(morgan('dev'))
 .use(express.json());
 
 sequelize.initDb();
@@ -21,6 +19,10 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
     console.error(err);
     res.send('Erreur');
+})
+
+app.get('/', (req, res) => {
+    res.json('Hello, Heroku ! <img draggable="false" role="img" class="emoji" alt="👋" src="https://s.w.org/images/core/emoji/13.0.1/svg/1f44b.svg">')
 })
 
 require('./src/routes/findAllPokemons')(app);

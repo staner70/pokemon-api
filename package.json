@@ -4,8 +4,8 @@
   "description": "An awesome API Rest to handle some pokemons.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "NODE_ENV=production node app.js",
+    "dev": "NODE_ENV=development nodemon app.js"
   },
   "author": "Salih",
   "license": "ISC",
@@ -17,8 +17,5 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.7.0",
     "serve-favicon": "^2.5.0"
-  },
-  "devDependencies": {
-    "morgan": "^1.10.0"
   }
 }
