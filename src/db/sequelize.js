@@ -4,7 +4,7 @@ const PokemonModel = require('../models/pokemon');
 const UserModel = require('../models/user');
 const pokemons = require('./mock-pokemon');
 
-// const sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
+// const sequelize = new Sequelize(process.env.DATABASE_URL);
 let sequelize;
 if (process.env.NODE_ENV === 'production') {
     sequelize = new Sequelize( process.env.DATABASE_URL, {
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
             }
           }});
 } else {
-    sequelize = new Sequelize('postgres://pokedex:pokedex@localhost:5432/pokedex');
+    sequelize = new Sequelize(process.env.DATABASE_URL);
 }
 
 const Pokemon = PokemonModel(sequelize, DataTypes);
